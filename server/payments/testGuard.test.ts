@@ -1,0 +1,10 @@
+import {it,expect,vi,afterEach} from "vitest";
+import path from "node:path";
+import {assertPhase9Fixture,assertOwnedTestDatabase} from "./testGuard";
+import {getDb} from "../db";
+vi.mock("../db",()=>({getDb:vi.fn()}));
+afterEach(()=>{vi.unstubAllEnvs();vi.resetAllMocks();});
+it("accepts only new, explicitly fictional Phase 9 bookings",()=>{vi.stubEnv("SOUTHSIDE_PHASE9_BASELINE_ID","100");expect(()=>assertPhase9Fixture(101,"Phase Eight Fictional Phase Nine Test Guest","phase9@example.invalid")).not.toThrow();for(const args of [[100,"Phase Eight Fictional Phase Nine Test Guest","phase9@example.invalid"],[101,"Phase Eight Fictional Old Guest","phase9@example.invalid"],[101,"Phase Eight Fictional Phase Nine Test Guest","real@example.com"]] as const)expect(()=>assertPhase9Fixture(...args)).toThrow(/restricted/);});
+it("rejects absent or invalid scope boundaries",()=>{for(const value of ["","NaN","-1","9007199254740992"]){vi.stubEnv("SOUTHSIDE_PHASE9_BASELINE_ID",value);expect(()=>assertPhase9Fixture(101,"Phase Eight Fictional Phase Nine Test Guest","phase9@example.invalid")).toThrow();}});
+it.each([{name:"production"},{port:3306},{datadir:path.resolve(".local/foreign-data")},{version:"10.6-MariaDB"}])("fails closed on an unexpected actual database identity %j",async override=>{vi.mocked(getDb).mockResolvedValue({execute:vi.fn(async()=>[[{name:"southside_development",port:3307,datadir:path.resolve(".local/mysql-data"),version:"8.4.13",...override}]])} as any);await expect(assertOwnedTestDatabase()).rejects.toThrow(/identity/);});
+it("accepts the verified development datadir/schema only",async()=>{vi.mocked(getDb).mockResolvedValue({execute:vi.fn(async()=>[[{name:"southside_development",port:3307,datadir:path.resolve(".local/mysql-data"),version:"8.4.13"}]])} as any);await expect(assertOwnedTestDatabase()).resolves.toBeUndefined();});

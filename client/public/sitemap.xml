@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>/</loc></url>
+  <url><loc>/accommodation</loc></url>
+  <url><loc>/rooms/classic-room</loc></url>
+  <url><loc>/rooms/royal-suite</loc></url>
+  <url><loc>/rooms/superior-suite</loc></url>
+  <url><loc>/rooms/luxury-room-205</loc></url>
+  <url><loc>/rooms/luxury-room-208</loc></url>
+  <url><loc>/rooms/premium-room-306</loc></url>
+  <url><loc>/rooms/premium-room-308</loc></url>
+  <url><loc>/rooms/executive-accommodation</loc></url>
+  <url><loc>/facilities</loc></url>
+  <url><loc>/gallery</loc></url>
+  <url><loc>/about</loc></url>
+  <url><loc>/discover</loc></url>
+  <url><loc>/contact</loc></url>
+  <url><loc>/offers</loc></url>
+  <url><loc>/faq</loc></url>
+  <url><loc>/policies</loc></url>
+  <url><loc>/booking</loc></url>
+  <url><loc>/booking/manage</loc></url>
+</urlset>

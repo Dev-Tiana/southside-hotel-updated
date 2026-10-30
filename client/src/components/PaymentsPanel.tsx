@@ -1,0 +1,10 @@
+import {useState} from "react";
+import {trpc} from "@/lib/trpc";
+export default function PaymentsPanel(){
+  const list=trpc.admin.payments.useQuery(undefined,{retry:false}),[message,setMessage]=useState("");const utils=trpc.useUtils();
+  const verify=trpc.admin.verifyPayment.useMutation({onSuccess:r=>{setMessage(`Payment ${r.paymentStatus}; booking ${r.bookingStatus}. Outstanding NGN ${r.outstanding}.`);void utils.admin.payments.invalidate();void utils.admin.summary.invalidate();void utils.operations.snapshot.invalidate();},onError:e=>setMessage(e.message)});
+  return <section className="admin-panel payments-panel" style={{marginTop:17}}><h2>Payment operations</h2><p className="admin-note">Test and simulation records only. Verified payments do not automatically confirm reservations. Review flags require separate reconciliation; this panel cannot refund or override balances.</p><button className="text-link" onClick={()=>void list.refetch()}>Refresh payment history</button>{message&&<p role="status">{message}</p>}{list.error&&<p role="alert">Payment history is unavailable. Please try again.</p>}{list.isLoading&&<p role="status">Loading payment history…</p>}
+    {list.data?.rows.map(row=><details className="booking-summary" key={row.id}><summary>{row.bookingReference} · {row.mode} · {row.status} · NGN {row.amount}</summary><p>Payment reference: {row.reference}<br/>Booking: {row.bookingStatus}<br/>Paid: NGN {row.amountPaid} · Outstanding: NGN {row.outstanding}</p>{row.lastErrorCode&&<p>Review: {row.lastErrorCode.replaceAll("_"," ")}</p>}<button className="button button-outline" disabled={verify.isPending} onClick={()=>verify.mutate({reference:row.reference})}>Verify authoritative status</button>{list.data.events.filter(event=>event.attemptId===row.id).map(event=><p key={event.id}>{event.source}: {event.status}{event.reason?` — ${event.reason}`:""}<br/>{event.details}</p>)}</details>)}
+    {list.data?.rows.length===0&&<p>No payment attempts have been stored.</p>}
+  </section>;
+}

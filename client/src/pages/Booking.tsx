@@ -1,0 +1,13 @@
+import { Link } from "wouter";
+import { ArrowRight, CheckCircle2, MessageCircle } from "lucide-react";
+import { BookingWidget } from "@/components/BookingWidget";
+import { SectionLabel, SouthsideShell } from "@/components/SouthsideShell";
+import { hotelProfile } from "@shared/hotel";
+
+export function Booking() {
+  return <SouthsideShell><section className="page-hero"><div className="page-width"><SectionLabel>Booking</SectionLabel><h1>Start with the dates that matter.</h1><p>Choose your arrival, departure, guests, and preferred room. The hotel team can then guide the next step for your SouthSide stay.</p></div></section><section className="page-content"><BookingWidget compact /><div className="page-width" style={{ marginTop: 65 }}><div className="section-header"><div><SectionLabel>How it works</SectionLabel><h2>A clear path from question to stay.</h2></div><p>Search your dates, review the room, and share the details the hotel needs to reply with a clear answer.</p></div><div className="catalogue-grid">{["Search your dates", "Review the room", "Submit your request"].map((title, index) => <article className="catalogue-card" key={title}><div className="catalogue-card-content"><span className="room-card-kicker">0{index + 1}</span><h2>{title}</h2><p>{index === 0 ? "Choose dates, guests, rooms, and a preferred category. The server checks the request." : index === 1 ? "Review the room choice and the guide rate before sharing your details." : "Enter guest details, review the total and terms, and receive a saved reference pending hotel confirmation."}</p></div></article>)}</div><div className="booking-direct"><div><span className="room-card-kicker">Prefer a direct answer?</span><h2>WhatsApp the hotel with your dates.</h2></div><a className="button button-copper" href={hotelProfile.social.whatsapp} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Message SouthSide</a></div></div></section></SouthsideShell>;
+}
+
+export function BookingConfirmation() {
+  return <SouthsideShell><section className="page-content"><div className="page-width empty-state" style={{ maxWidth: 720 }}><CheckCircle2 size={32} color="var(--copper)" /><SectionLabel>Enquiry received</SectionLabel><h1 style={{ font: "400 52px var(--serif)", margin: "15px 0" }}>Your enquiry is in the right place.</h1><p>The hotel team can now review your request and reply with the next step for your dates. Keep your reference close if you need to change the request.</p><div className="hero-actions" style={{ justifyContent: "center" }}><Link className="button button-copper" href="/booking/manage">Change a request <ArrowRight size={16} /></Link><Link className="button button-outline" href="/contact">Contact the hotel</Link></div></div></section></SouthsideShell>;
+}
